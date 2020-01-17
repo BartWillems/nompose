@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  redis:
+    image: redis:latest
+    environment:
+      PASSWORD: "secret"
+    ports:
+      - 8000:8000
+  octaaf:
+    image: golang:1.12
+    volumes:
+      - .:/go/src/octaaf
+    working_dir: /go/src/octaaf
+    command: go run octaaf -mod vendor
+    environment:
+      KALICOIN_ENABLED: "true"
+      KALICOIN_URI: "http://kalicoin:8000"
+      KALICOIN_USERNAME: "octaaf"
+      KALICOIN_PASSWORD: "secret"
+      JAEGER_AGENT_HOST: "jaeger"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - octaaf-db
+      - jaeger
+      - kalicoin
+
