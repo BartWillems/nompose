@@ -26,3 +26,29 @@ services:
       - jaeger
       - kalicoin
 
+  postgres:
+    image: postgres:9.2
+    environment:
+      POSTGRES_DB: "kalicoin"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+    ports:
+      - 5432:5432
+
+  pg_admin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "kali@local.int"
+      PGADMIN_DEFAULT_PASSWORD: "kalicoin"
+    depends_on:
+      - postgres
+    ports:
+      - 8080:80
+  jaeger:
+    image: jaegertracing/all-in-one:1.11
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: "9411"
+    ports:
+      - 6831:6831/udp
+      - 16686:16686
+
